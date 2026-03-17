@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 require('dotenv').config();
 const dbUrl = process.env.URL;
+
+
 mongoose
   .connect(dbUrl)
   .then(() => {
@@ -9,6 +11,7 @@ mongoose
   .catch((evt) => {
     console.log(evt);
   });
+
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -19,8 +22,10 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+
 // create user model
 const User = mongoose.model("User", userSchema); // ab monggodb me users name se ek collection hoga cause 'User' hai to.
+
 async function runQueriesExamples() {
   try {
     // creating a new user
@@ -33,7 +38,7 @@ async function runQueriesExamples() {
       isActive: true,
     });
     // another way to create a new user
-    const anotherUser = new User({
+    const anotherUser = await new User({
      name: "Abhishek Singh2",
       email: "abhi22@gmail.com",
       age: 22,
@@ -71,18 +76,20 @@ async function runQueriesExamples() {
     const countDocuments = await User.countDocuments({isActive:true});
     console.log(countDocuments);
 
-    // delete the user 
-    const deleteduser = await User.findByIdAndDelete(newuser._id);
-    console.log('deleteduser->> ',deleteduser);
-
-    //update the user 
+       //update the user 
     const updatedUser = await User.findByIdAndUpdate(newuser._id,{
      $set:{age:100},$push:{tags:'updated'}
     },{returnDocument: 'after'})
 
+    
     // earlier it was new:true now it has changed and 
     // returnDocument:'after'
     console.log(updatedUser);
+
+
+    // delete the user 
+    const deleteduser = await User.findByIdAndDelete(newuser._id);
+    console.log('deleteduser->> ',deleteduser);
 
 
   } catch (e) {
